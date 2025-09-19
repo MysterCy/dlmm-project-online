@@ -61,6 +61,10 @@ TEMPLATES = [
     },
 ]
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, '..', 'frontend', 'build'),
+]
+
 WSGI_APPLICATION = 'dlmm_project.wsgi.application'
 
 # Database

@@ -7,9 +7,8 @@ set -e
 npm install --prefix frontend
 npm run build --prefix frontend
 
-# Copie des fichiers statiques
-cp -r frontend/build/* staticfiles/
-cp -r frontend/public/* staticfiles/
+# Collecte les fichiers statiques
+python manage.py collectstatic --noinput
 
 # Run database migrations
 python manage.py makemigrations
