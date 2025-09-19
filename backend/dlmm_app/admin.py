@@ -26,23 +26,38 @@ admin.site.register(Category, CategoryAdmin)
 
 # Création d'une classe d'administration personnalisée pour le modèle Transaction
 class TransactionAdmin(admin.ModelAdmin):
-    # Les champs à afficher dans la liste des transactions
-    list_display = ('date', 'description', 'amount', 'category', 'subcategory', 'account',)
+    # Utilisation de méthodes personnalisées pour un affichage stable
+    list_display = (
+        'date',
+        'description',
+        'amount',
+        'get_category_name', 
+        'get_subcategory_name',
+        'account',
+    )
     
-    # Les champs sur lesquels on peut cliquer pour modifier la transaction
     list_display_links = ('description',)
-    
-    # Les champs qui peuvent être édités directement dans la liste
     list_editable = ('amount',)
     
-    # Les filtres disponibles dans la barre latérale
-    list_filter = ('category', 'subcategory', 'account', 'date',)
+    # Correction des filtres pour utiliser les noms des champs liés
+    list_filter = (
+        'category__name', 
+        'subcategory__name', 
+        'account', 
+        'date',
+    )
     
-    # Barre de recherche
     search_fields = ('description', 'category__name', 'subcategory__name',)
-    
-    # Lien vers la date de la hiérarchie pour naviguer par date
     date_hierarchy = 'date'
+
+    # Méthodes pour afficher les noms de la catégorie et de la sous-catégorie
+    def get_category_name(self, obj):
+        return obj.category.name if obj.category else 'Non classé'
+    get_category_name.short_description = 'Catégorie'
+
+    def get_subcategory_name(self, obj):
+        return obj.subcategory.name if obj.subcategory else 'Non classé'
+    get_subcategory_name.short_description = 'Sous-catégorie'
 
 # Enregistrement du modèle Transaction avec la classe d'administration personnalisée
 admin.site.register(Transaction, TransactionAdmin)
