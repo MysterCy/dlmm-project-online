@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-# Sortez du script à la première erreur
+# Exit on first error
 set -e
 
 # Build de l'application front-end
