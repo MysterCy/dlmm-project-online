@@ -1,10 +1,6 @@
 from django.contrib import admin
 from .models import Account, Transaction, Category, LivretA, Subcategory
 
-# Enregistrement des modèles
-admin.site.register(Account)
-admin.site.register(LivretA)
-
 # Création de la classe Inline pour les sous-catégories
 class SubcategoryInline(admin.TabularInline):
     model = Subcategory
@@ -21,7 +17,9 @@ class CategoryAdmin(admin.ModelAdmin):
     
     get_subcategories.short_description = 'Sous-catégories'
 
-# Enregistrement du modèle Category avec la classe d'administration personnalisée
+# Enregistrement des modèles
+admin.site.register(Account)
+admin.site.register(LivretA)
 admin.site.register(Category, CategoryAdmin)
 
 # Création d'une classe d'administration personnalisée pour le modèle Transaction
@@ -39,13 +37,8 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display_links = ('description',)
     list_editable = ('amount',)
     
-    # Correction des filtres pour utiliser les noms des champs liés
-    list_filter = (
-        'category__name', 
-        'subcategory__name', 
-        'account', 
-        'date',
-    )
+    # Correction des filtres pour utiliser les noms des champs
+    list_filter = ('category', 'subcategory', 'account', 'date',)
     
     search_fields = ('description', 'category__name', 'subcategory__name',)
     date_hierarchy = 'date'
