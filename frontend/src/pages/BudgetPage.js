@@ -5,18 +5,15 @@ function BudgetPage() {
   const [categories, setCategories] = useState([]);
   const [yearlyData, setYearlyData] = useState({});
   const [budgetData, setBudgetData] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Correction de l'avertissement 'react-hooks/exhaustive-deps' et des années à afficher
   const currentYear = new Date().getFullYear();
   const allYears = useMemo(() => {
     const pastYears = [currentYear - 1];
     const futureYears = [currentYear + 1, currentYear + 2];
     const years = [...pastYears, currentYear, ...futureYears].sort((a, b) => a - b);
-    return years.filter(year => year !== 2023); // Enlève 2023 si elle est dans la liste
+    return years.filter(year => year !== 2023);
   }, [currentYear]);
 
-  // Fonction pour charger les données budgétaires depuis le stockage local
   const loadBudgetData = () => {
     try {
       const storedData = localStorage.getItem('budgetData');
@@ -28,7 +25,6 @@ function BudgetPage() {
     }
   };
 
-  // Fonction pour sauvegarder les données budgétaires
   const saveBudgetData = (data) => {
     try {
       localStorage.setItem('budgetData', JSON.stringify(data));
@@ -38,14 +34,11 @@ function BudgetPage() {
   };
 
   const fetchData = useCallback(async () => {
-    setIsLoading(true);
     try {
-      // 1. Récupérer toutes les catégories
       const categoriesResponse = await fetch('http://127.0.0.1:8000/api/categories/');
       const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
 
-      // 2. Récupérer les données de budget agrégées pour chaque année
       const yearlyDataPromises = allYears.map(year =>
         fetch(`http://127.0.0.1:8000/api/budget/summary/?year=${year}`)
           .then(res => res.json())
@@ -62,8 +55,6 @@ function BudgetPage() {
 
     } catch (error) {
       console.error("Erreur lors de la récupération des données:", error);
-    } finally {
-      setIsLoading(false);
     }
   }, [allYears]);
 

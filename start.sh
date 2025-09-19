@@ -3,22 +3,5 @@
 # Exit on first error
 set -e
 
-# Build de l'application front-end
-npm install --prefix frontend
-npm run build --prefix frontend
-
-# Copier index.html pour que Django le trouve
-cp frontend/build/index.html backend/dlmm_project/templates/index.html
-
-# Run database migrations
-python manage.py makemigrations
-python manage.py migrate --noinput
-
-# Créez un super-utilisateur
-python manage.py createsuperuser --noinput
-
-# Collecte les fichiers statiques
-python manage.py collectstatic --noinput
-
 # Démarrez le serveur Gunicorn
 gunicorn dlmm_project.wsgi:application

@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './StatistiquesPage.css';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF0000', '#00FF00', '#0000FF'];
 
 function StatistiquesPage() {
   const [statsData, setStatsData] = useState(null);
-  const [monthlyStats, setMonthlyStats] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedFilters, setSelectedFilters] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  // Définir explicitement les catégories de recettes
   const REVENUE_CATEGORIES = ['Ventes', 'DONS', 'Adhésions',"Remboursements","Intérêts Bancaires"];
 
   const fetchCategories = useCallback(async () => {
@@ -62,43 +60,13 @@ function StatistiquesPage() {
     }
   }, [selectedYear, selectedMonth, selectedFilters]);
 
-  const fetchMonthlyStats = useCallback(async () => {
-    try {
-      let url = 'http://127.0.0.1:8000/api/monthly-summary/';
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        const filteredData = data.filter(item => {
-          const [year, month] = item.month.split('-');
-          const matchesYear = selectedYear ? year === selectedYear : true;
-          const matchesMonth = selectedMonth ? month === selectedMonth.padStart(2, '0') : true;
-          return matchesYear && matchesMonth;
-        });
-        const cleanData = filteredData.map(item => ({
-          ...item,
-          income: item.income || 0,
-          expense: item.expense || 0
-        }));
-        setMonthlyStats(cleanData);
-      } else {
-        console.error('Erreur lors de la récupération des données mensuelles.');
-      }
-    } catch (error) {
-      console.error('Erreur de connexion:', error);
-    }
-  }, [selectedYear, selectedMonth]);
-
-  const totalExpenses = statsData ? statsData.expenses_total || 0 : 0;
-  const totalRevenues = statsData ? statsData.revenues_total || 0 : 0;
-
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
   useEffect(() => {
     fetchStats();
-    fetchMonthlyStats();
-  }, [fetchStats, fetchMonthlyStats]);
+  }, [fetchStats]);
 
   const handleCategoryChange = (event) => {
     const value = event.target.value;
@@ -132,10 +100,11 @@ function StatistiquesPage() {
     return <div className="loading-message">Chargement des statistiques...</div>;
   }
   
-  // Filtrer les catégories pour les recettes et les dépenses basées sur la liste définie
   const allAvailableCategories = statsData.categories_data || [];
   const revenuesCategories = allAvailableCategories.filter(cat => REVENUE_CATEGORIES.includes(cat.name));
   const expensesCategories = allAvailableCategories.filter(cat => !REVENUE_CATEGORIES.includes(cat.name));
+  const totalExpenses = statsData ? statsData.expenses_total || 0 : 0;
+  const totalRevenues = statsData ? statsData.revenues_total || 0 : 0;
 
   const pieChartRevenuesData = revenuesCategories.map(cat => ({
       name: cat.name,

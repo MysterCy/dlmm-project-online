@@ -39,7 +39,6 @@ function TransactionsPage() {
         console.error('Erreur lors de la récupération des transactions Crédit Agricole.');
       }
 
-      // Tri des transactions par date, des plus récentes aux plus anciennes
       transactionsData.sort((a, b) => new Date(b.date) - new Date(a.date));
       
       setTransactions(transactionsData);
@@ -61,35 +60,6 @@ function TransactionsPage() {
   useEffect(() => {
     fetchAllData();
   }, []);
-
-  const handleCategoryChange = async (transactionId, newCategoryId) => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/transactions/${transactionId}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ category: newCategoryId }),
-      });
-
-      if (response.ok) {
-        console.log('Catégorie mise à jour avec succès.');
-        // On cherche l'objet catégorie complet dans le state 'categories'
-        const updatedCategory = categories.find(cat => String(cat.id) === newCategoryId);
-        
-        // Mise à jour du state avec l'objet catégorie complet
-        setTransactions(prevTransactions =>
-          prevTransactions.map(transaction =>
-            transaction.id === transactionId ? { ...transaction, category: updatedCategory } : transaction
-          )
-        );
-      } else {
-        console.error('Erreur lors de la mise à jour de la catégorie.');
-      }
-    } catch (error) {
-      console.error('Erreur de connexion:', error);
-    }
-  };
 
   const handleFileChange = (event, transactionId) => {
     setJustificatifFile(event.target.files[0]);
@@ -165,7 +135,6 @@ function TransactionsPage() {
       alert("Erreur de connexion au serveur.");
     }
   };
-
 
   if (isLoading) {
     return <div className="loading-message">Chargement des transactions...</div>;
