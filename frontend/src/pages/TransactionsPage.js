@@ -204,6 +204,12 @@ function TransactionsPage() {
                   />
                 </td>
               </tr>
-            ))}\n          </tbody>\n        </table>
-      )}\n    </div>
-  );\n}\n\nexport default TransactionsPage;
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+export default TransactionsPage;
