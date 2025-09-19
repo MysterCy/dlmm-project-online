@@ -1,16 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Exit on first error
+set -e
 
-echo "Démarrage des serveurs..."
+# Run database migrations
+python manage.py makemigrations
+python manage.py migrate
 
-echo "Lancement du backend Django..."
-# Active l'environnement virtuel et lance le serveur Django
-(cd /Users/cyrilbarratier/Documents/DLMM/backend && source venv/bin/activate && python3 manage.py runserver) &
+# Create a superuser if it doesn't exist
+python manage.py createsuperuser --noinput
 
-echo "Lancement du frontend React..."
-(cd /Users/cyrilbarratier/Documents/DLMM/frontend && npm start) &
-
-sleep 5
-
-echo "Les deux serveurs sont démarrés."
-echo "Pour les arrêter, retournez dans ce terminal et appuyez sur Ctrl+C."
-wait
+# Start the Gunicorn server
+gunicorn dlmm_project.wsgi:application
