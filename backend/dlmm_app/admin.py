@@ -1,6 +1,10 @@
 from django.contrib import admin
 from .models import Account, Transaction, Category, LivretA, Subcategory
 
+# Enregistrement des modèles
+admin.site.register(Account)
+admin.site.register(LivretA)
+
 # Création de la classe Inline pour les sous-catégories
 class SubcategoryInline(admin.TabularInline):
     model = Subcategory
@@ -17,10 +21,22 @@ class CategoryAdmin(admin.ModelAdmin):
     
     get_subcategories.short_description = 'Sous-catégories'
 
-# Enregistrement des modèles
-admin.site.register(Account)
-admin.site.register(LivretA)
+# Enregistrement du modèle Category avec la classe d'administration personnalisée
 admin.site.register(Category, CategoryAdmin)
+
+# Création d'un filtre personnalisé pour le champ de catégorie
+class CategoryFilter(admin.SimpleListFilter):
+    title = 'catégorie'
+    parameter_name = 'category'
+
+    def lookups(self, request, model_admin):
+        categories = set([t.category for t in Transaction.objects.filter(category__isnull=False)])
+        return [(c.id, c.name) for c in sorted(categories, key=lambda x: x.name)]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(category_id=self.value())
+        return queryset
 
 # Création d'une classe d'administration personnalisée pour le modèle Transaction
 class TransactionAdmin(admin.ModelAdmin):
@@ -37,8 +53,8 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display_links = ('description',)
     list_editable = ('amount',)
     
-    # Correction des filtres pour utiliser les noms des champs
-    list_filter = ('category', 'subcategory', 'account', 'date',)
+    # Utilisation du filtre personnalisé
+    list_filter = (CategoryFilter, 'account', 'date')
     
     search_fields = ('description', 'category__name', 'subcategory__name',)
     date_hierarchy = 'date'
