@@ -6,11 +6,13 @@ function LivretAPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [balance, setBalance] = useState(0);
 
+  const API_URL = 'https://dlmm-backend.onrender.com/api';
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('http://127.0.0.1:8000/api/livreta/');
+        const response = await fetch(`${API_URL}/livreta/`);
         if (response.ok) {
           const result = await response.json();
           setData(result);
@@ -28,7 +30,7 @@ function LivretAPage() {
     };
 
     fetchData();
-  }, []);
+  }, [API_URL]);
 
   if (isLoading) {
     return <div className="loading-message">Chargement des données du Livret A...</div>;

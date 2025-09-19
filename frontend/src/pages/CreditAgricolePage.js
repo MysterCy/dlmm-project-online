@@ -6,10 +6,12 @@ function CreditAgricolePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState(null);
 
+  const API_URL = 'https://dlmm-backend.onrender.com/api';
+
   const fetchTransactions = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://127.0.0.1:8000/api/transactions/Crédit Agricole/');
+      const response = await fetch(`${API_URL}/transactions/Crédit Agricole/`);
       if (response.ok) {
         const data = await response.json();
         setTransactions(data);
@@ -41,7 +43,7 @@ function CreditAgricolePage() {
     formData.append("file", file);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/upload/creditagricole/', {
+      const response = await fetch(`${API_URL}/upload/creditagricole/`, {
         method: 'POST',
         body: formData,
       });
@@ -49,9 +51,7 @@ function CreditAgricolePage() {
       if (response.ok) {
         const data = await response.json();
         alert(data.message);
-        setFile(null);
-        // Recharge les transactions après un import réussi
-        fetchTransactions(); 
+        fetchTransactions(); // Re-fetch pour afficher les nouvelles données
       } else {
         const errorData = await response.json();
         alert(`Erreur d'importation: ${errorData.message}`);
