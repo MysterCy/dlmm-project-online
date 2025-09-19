@@ -7,6 +7,9 @@ set -e
 npm install --prefix frontend
 npm run build --prefix frontend
 
+# Copier index.html pour que Django le trouve
+cp frontend/build/index.html backend/dlmm_project/templates/index.html
+
 # Run database migrations
 python manage.py makemigrations
 python manage.py migrate --noinput
