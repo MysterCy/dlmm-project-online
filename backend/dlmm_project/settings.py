@@ -63,6 +63,10 @@ TEMPLATES = [
     },
 ]
 
+STATICFILES_DIRS = [
+    BASE_DIR / '..' / 'frontend' / 'build' / 'static',
+]
+
 WSGI_APPLICATION = 'dlmm_project.wsgi.application'
 
 # Database
