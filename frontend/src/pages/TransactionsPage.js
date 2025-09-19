@@ -4,7 +4,6 @@ import './TransactionsPage.css';
 function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
   const [justificatifFile, setJustificatifFile] = useState(null);
   const [selectedTransactionId, setSelectedTransactionId] = useState(null);
   const [checkedState, setCheckedState] = useState({});
@@ -15,12 +14,10 @@ function TransactionsPage() {
       setIsLoading(true);
       const [
         sumupResponse,
-        creditAgricoleResponse,
-        categoriesResponse
+        creditAgricoleResponse
       ] = await Promise.all([
         fetch('http://127.0.0.1:8000/api/transactions/SumUP/'),
-        fetch('http://127.0.0.1:8000/api/transactions/Crédit Agricole/'),
-        fetch('http://127.0.0.1:8000/api/categories/')
+        fetch('http://127.0.0.1:8000/api/transactions/Crédit Agricole/')
       ]);
       
       let transactionsData = [];
@@ -42,13 +39,6 @@ function TransactionsPage() {
       transactionsData.sort((a, b) => new Date(b.date) - new Date(a.date));
       
       setTransactions(transactionsData);
-
-      if (categoriesResponse.ok) {
-        const categoriesData = await categoriesResponse.json();
-        setCategories(categoriesData);
-      } else {
-        console.error('Erreur lors de la récupération des catégories.');
-      }
 
     } catch (error) {
       console.error('Erreur de connexion:', error);
@@ -123,7 +113,6 @@ function TransactionsPage() {
       
       if (response.ok) {
         const newCategory = await response.json();
-        setCategories(prevCategories => [...prevCategories, newCategory]);
         setNewCategoryName('');
         alert(`La catégorie "${newCategory.name}" a été créée avec succès.`);
       } else {
