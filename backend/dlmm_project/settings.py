@@ -50,7 +50,7 @@ ROOT_URLCONF = 'dlmm_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # Ajoutez cette ligne
+        'DIRS': [BASE_DIR / '..' / '..' / 'frontend' / 'public'],  # Chemin corrigé
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
