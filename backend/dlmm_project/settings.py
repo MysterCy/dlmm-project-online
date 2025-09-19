@@ -4,17 +4,15 @@ Django settings for dlmm_project project.
 
 from pathlib import Path
 import os
-import dj_database_url # Import pour la base de données PostgreSQL
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Récupère la clé secrète depuis les variables d'environnement de Render
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-34_wdon07iv4$6c4bx7dx31hgx7o8nw5yjnfkgmmqpklspvjf+')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Désactive le mode de débogage pour la production
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # Autorise l'accès depuis le nom de domaine de Render
@@ -35,7 +33,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # Permet de servir les fichiers statiques
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,14 +61,9 @@ TEMPLATES = [
     },
 ]
 
-STATICFILES_DIRS = [
-    BASE_DIR / '..' / 'frontend' / 'build' / 'static',
-]
-
 WSGI_APPLICATION = 'dlmm_project.wsgi.application'
 
 # Database
-# Connecte la base de données fournie par Render (PostgreSQL)
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'
@@ -107,9 +100,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '..', 'frontend', 'build', 'static'),
+    os.path.join(BASE_DIR, '..', 'frontend', 'build'),
 ]
-# Définit WhiteNoise pour servir les fichiers statiques compressés
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 if not DEBUG:
@@ -120,7 +113,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://dlmm-backend.onrender.com", # Remplacez par l'URL de votre site
+    "https://dlmm-backend.onrender.com",
 ]
 
 MEDIA_URL = '/media/'
