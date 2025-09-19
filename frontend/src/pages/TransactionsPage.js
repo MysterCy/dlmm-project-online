@@ -4,7 +4,6 @@ import './TransactionsPage.css';
 function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categories, setCategories] = useState([]); // Variable 'categories'
   const [justificatifFile, setJustificatifFile] = useState(null);
   const [selectedTransactionId, setSelectedTransactionId] = useState(null);
   const [checkedState, setCheckedState] = useState({});
@@ -46,9 +45,7 @@ function TransactionsPage() {
       setTransactions(transactionsData);
 
       if (categoriesResponse.ok) {
-        const categoriesData = await categoriesResponse.json();
-        setCategories(categoriesData); // Met à jour l'état des catégories
-        console.log("Catégories chargées :", categoriesData.length); // Utilisation de la variable
+        await categoriesResponse.json();
       } else {
         console.error('Erreur lors de la récupération des catégories.');
       }
@@ -207,12 +204,6 @@ function TransactionsPage() {
                   />
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-  );
-}
-
-export default TransactionsPage;
+            ))}\n          </tbody>\n        </table>
+      )}\n    </div>
+  );\n}\n\nexport default TransactionsPage;
