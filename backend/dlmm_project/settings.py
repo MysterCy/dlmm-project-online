@@ -48,7 +48,6 @@ ROOT_URLCONF = 'dlmm_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Le chemin de votre build React
         'DIRS': [os.path.join(BASE_DIR, '..', 'frontend', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -86,7 +85,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
