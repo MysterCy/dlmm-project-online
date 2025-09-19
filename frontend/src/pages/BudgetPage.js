@@ -6,6 +6,8 @@ function BudgetPage() {
   const [yearlyData, setYearlyData] = useState({});
   const [budgetData, setBudgetData] = useState({});
 
+  const API_URL = 'https://dlmm-backend.onrender.com/api';
+
   const currentYear = new Date().getFullYear();
   const allYears = useMemo(() => {
     const pastYears = [currentYear - 1];
@@ -35,12 +37,12 @@ function BudgetPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const categoriesResponse = await fetch('http://127.0.0.1:8000/api/categories/');
+      const categoriesResponse = await fetch(`${API_URL}/categories/`);
       const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
 
       const yearlyDataPromises = allYears.map(year =>
-        fetch(`http://127.0.0.1:8000/api/budget/summary/?year=${year}`)
+        fetch(`${API_URL}/budget/summary/?year=${year}`)
           .then(res => res.json())
           .then(data => ({ year, data }))
       );

@@ -12,11 +12,13 @@ function StatistiquesPage() {
   const [selectedFilters, setSelectedFilters] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
+  const API_URL = 'https://dlmm-backend.onrender.com/api';
+
   const REVENUE_CATEGORIES = ['Ventes', 'DONS', 'Adhésions',"Remboursements","Intérêts Bancaires"];
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/categories/');
+      const response = await fetch(`${API_URL}/categories/`);
       if (response.ok) {
         const data = await response.json();
         const sortedCategories = data.sort((a, b) => a.name.localeCompare(b.name));
@@ -27,11 +29,11 @@ function StatistiquesPage() {
     } catch (error) {
       console.error('Erreur de connexion:', error);
     }
-  }, []);
+  }, [API_URL]);
 
   const fetchStats = useCallback(async () => {
     setIsLoading(true);
-    let url = 'http://127.0.0.1:8000/api/statistics/?';
+    let url = `${API_URL}/statistics/?`;
 
     if (selectedYear) {
       url += `year=${selectedYear}&`;
@@ -58,7 +60,7 @@ function StatistiquesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedYear, selectedMonth, selectedFilters]);
+  }, [API_URL, selectedYear, selectedMonth, selectedFilters]);
 
   useEffect(() => {
     fetchCategories();
@@ -287,8 +289,7 @@ function StatistiquesPage() {
                         </tr>
                       ))}
                     </React.Fragment>
-                  ))}
-                </tbody>
+                  ))}\n                </tbody>
               </table>
             </div>
 

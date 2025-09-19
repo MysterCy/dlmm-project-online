@@ -4,20 +4,25 @@ import './TransactionsPage.css';
 function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
   const [justificatifFile, setJustificatifFile] = useState(null);
   const [selectedTransactionId, setSelectedTransactionId] = useState(null);
   const [checkedState, setCheckedState] = useState({});
   const [newCategoryName, setNewCategoryName] = useState('');
+
+  const API_URL = 'https://dlmm-backend.onrender.com/api';
 
   const fetchAllData = async () => {
     try {
       setIsLoading(true);
       const [
         sumupResponse,
-        creditAgricoleResponse
+        creditAgricoleResponse,
+        categoriesResponse
       ] = await Promise.all([
-        fetch('http://127.0.0.1:8000/api/transactions/SumUP/'),
-        fetch('http://127.0.0.1:8000/api/transactions/Crédit Agricole/')
+        fetch(`${API_URL}/transactions/SumUP/`),
+        fetch(`${API_URL}/transactions/Crédit Agricole/`),
+        fetch(`${API_URL}/categories/`)
       ]);
       
       let transactionsData = [];
@@ -39,6 +44,13 @@ function TransactionsPage() {
       transactionsData.sort((a, b) => new Date(b.date) - new Date(a.date));
       
       setTransactions(transactionsData);
+
+      if (categoriesResponse.ok) {
+        const categoriesData = await categoriesResponse.json();
+        setCategories(categoriesData);
+      } else {
+        console.error('Erreur lors de la récupération des catégories.');
+      }
 
     } catch (error) {
       console.error('Erreur de connexion:', error);
@@ -66,7 +78,7 @@ function TransactionsPage() {
     formData.append('justificatif', justificatifFile);
 
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/transactions/${transactionId}/upload_justificatif/`, {
+        const response = await fetch(`${API_URL}/transactions/${transactionId}/upload_justificatif/`, {
             method: 'POST',
             body: formData,
         });
@@ -103,7 +115,7 @@ function TransactionsPage() {
     }
     
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/category/create/', {
+      const response = await fetch(`${API_URL}/category/create/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +184,7 @@ function TransactionsPage() {
                 </td>
                 <td>
                   {transaction.justificatif ? (
-                    <a href={`http://127.0.0.1:8000${transaction.justificatif}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`https://dlmm-backend.onrender.com${transaction.justificatif}`} target="_blank" rel="noopener noreferrer">
                       <span role="img" aria-label="justificatif-uploaded">✅</span>
                     </a>
                   ) : (
