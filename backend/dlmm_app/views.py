@@ -6,11 +6,11 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.renderers import JSONRenderer
 
 from django.db.models import Sum, F, Case, When, Value, CharField, DecimalField
-from django.db.models.functions import Coalesce # NOUVEL IMPORT
+from django.db.models.functions import Coalesce
 from django.db.models.functions import ExtractMonth, ExtractYear
 from rest_framework.views import APIView
 from collections import defaultdict
-from django.db.models import Q # Ajouté pour la gestion des multiples filtres
+from django.db.models import Q
 
 from .models import Transaction, Account, Category, Subcategory, LivretA
 from .serializers import (
@@ -37,110 +37,94 @@ class SumUpFileUploadView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        file = serializer.validated_data['file']
-        
+        file_obj = serializer.validated_data['file']
+
         try:
-            vente_boutique_category = Category.objects.get(name="Vente Boutique")
-        except Category.DoesNotExist:
-            vente_boutique_category = None
-        
-        account_name = "SumUP"
-        sumup_account, created = Account.objects.get_or_create(name=account_name)
-        
-        file_content = file.read().decode('utf-8-sig').splitlines()
-        csv_reader = csv.reader(file_content)
-        
-        header = next(csv_reader)
-        
-        transactions_to_create = []
-        for row in csv_reader:
-            if len(row) < 7:
-                continue
-                
-            try:
-                date_str = row[0].split(' ')[0]
-                date = datetime.strptime(date_str, '%d/%m/%Y').date()
-                description = row[3]
-                
-                amount_credited_str = row[7].replace(',', '.')
-                amount_debited_str = row[6].replace(',', '.')
-                
-                amount_credited = float(amount_credited_str) if amount_credited_str else 0.0
-                amount_debited = float(amount_debited_str) if amount_debited_str else 0.0
-                
-                amount = amount_credited - amount_debited
-                
-                if not Transaction.objects.filter(account=sumup_account, date=date, description=description, amount=amount).exists():
-                    transactions_to_create.append(
-                        Transaction(
+            decoded_file = file_obj.read().decode('utf-8-sig').splitlines()
+            reader = csv.DictReader(decoded_file)
+            transactions_to_create = []
+
+            sumup_account, created = Account.objects.get_or_create(name='SumUP')
+
+            with db_transaction.atomic():
+                for row in reader:
+                    date_str = row.get('Date de transaction', '').strip()
+                    amount_str = row.get('Montant', '0').replace(',', '.').strip()
+                    description = row.get('Détail', '').strip()
+
+                    if not date_str or not description:
+                        continue
+                    
+                    try:
+                        date_obj = datetime.strptime(date_str.split(' ')[0], '%Y-%m-%d').date()
+                        amount = float(amount_str)
+
+                        transactions_to_create.append(Transaction(
                             account=sumup_account,
-                            date=date,
+                            date=date_obj,
                             description=description,
                             amount=amount,
-                            category=vente_boutique_category if vente_boutique_category and amount > 0 else None
-                        )
-                    )
-            except (ValueError, IndexError) as e:
-                print(f"Erreur lors du traitement de la ligne: {row}. Erreur: {e}")
-                
-        if transactions_to_create:
-            with db_transaction.atomic():
-                Transaction.objects.bulk_create(transactions_to_create)
+                        ))
+                    except (ValueError, TypeError) as e:
+                        print(f"Erreur lors du traitement de la ligne : {row}. Erreur : {e}")
+                        continue
+            
+            if transactions_to_create:
+                Transaction.objects.bulk_create(transactions_to_create, ignore_conflicts=True)
+                return Response({"message": f"{len(transactions_to_create)} transactions SumUP importées avec succès."}, status=status.HTTP_201_CREATED)
 
-        return Response({"message": "Fichier SumUP importé avec succès."}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Aucune nouvelle transaction à importer."}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"message": f"Erreur lors de l'importation: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
 # Vue de téléchargement pour les fichiers Crédit Agricole
 class CreditAgricoleFileUploadView(generics.CreateAPIView):
-    serializer_class = SumUpFileUploadSerializer
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        file = serializer.validated_data['file']
+        file_obj = serializer.validated_data['file']
 
-        account_name = "Crédit Agricole"
-        ca_account, created = Account.objects.get_or_create(name=account_name)
-        
-        file_content = file.read().decode('utf-8-sig').splitlines()
-        csv_reader = csv.reader(file_content, delimiter=';')
-        
-        transactions_to_create = []
+        try:
+            decoded_file = file_obj.read().decode('utf-8-sig').splitlines()
+            reader = csv.DictReader(decoded_file, delimiter=';')
+            transactions_to_create = []
 
-        for _ in range(9):
-            next(csv_reader)
+            ca_account, created = Account.objects.get_or_create(name='Crédit Agricole')
 
-        for row in csv_reader:
-            if len(row) < 4:
-                continue
+            with db_transaction.atomic():
+                for row in reader:
+                    date_str = row.get('Date', '').strip()
+                    amount_str = row.get('Montant', '0').replace(',', '.').strip()
+                    description = row.get('Libellé', '').strip()
 
-            try:
-                date_str = row[0]
-                date = datetime.strptime(date_str, '%d/%m/%Y').date()
-                description = row[1].strip().replace('\n', ' ')
-                
-                debit_str = row[2].replace(' ', '').replace(',', '.') if row[2] else '0'
-                credit_str = row[3].replace(' ', '').replace(',', '.') if row[3] else '0'
-                
-                amount = float(credit_str) - float(debit_str)
-                
-                if not Transaction.objects.filter(account=ca_account, date=date, description=description, amount=amount).exists():
-                    transactions_to_create.append(
-                        Transaction(
+                    if not date_str or not description:
+                        continue
+
+                    try:
+                        date_obj = datetime.strptime(date_str, '%d/%m/%Y').date()
+                        amount = float(amount_str)
+
+                        transactions_to_create.append(Transaction(
                             account=ca_account,
-                            date=date,
+                            date=date_obj,
                             description=description,
                             amount=amount,
-                        )
-                    )
-            except (ValueError, IndexError) as e:
-                print(f"Erreur lors du traitement de la ligne: {row}. Erreur: {e}")
+                        ))
+                    except (ValueError, TypeError) as e:
+                        print(f"Erreur lors du traitement de la ligne : {row}. Erreur : {e}")
+                        continue
+            
+            if transactions_to_create:
+                Transaction.objects.bulk_create(transactions_to_create, ignore_conflicts=True)
+                return Response({"message": f"{len(transactions_to_create)} transactions du Crédit Agricole importées avec succès."}, status=status.HTTP_201_CREATED)
+            
+            return Response({"message": "Aucune nouvelle transaction à importer."}, status=status.HTTP_200_OK)
 
-        if transactions_to_create:
-            with db_transaction.atomic():
-                Transaction.objects.bulk_create(transactions_to_create)
-
-        return Response({"message": "Fichier Crédit Agricole importé avec succès."}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"message": f"Erreur lors de l'importation: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
 class TransactionListView(generics.ListAPIView):
     serializer_class = AllTransactionSerializer

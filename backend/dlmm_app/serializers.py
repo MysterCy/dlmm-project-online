@@ -5,22 +5,22 @@ from .models import Transaction, Category, Subcategory, Account, LivretA
 class SumUpFileUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
 
+class CreditAgricoleFileUploadSerializer(serializers.Serializer):
+    file = serializers.FileField()
+    
 class TransactionSerializer(serializers.ModelSerializer):
     account_name = serializers.CharField(source='account.name', read_only=True)
-    category_name = serializers.CharField(source='category.name', read_only=True)
-    subcategory_name = serializers.CharField(source='subcategory.name', read_only=True)
-
+    
     class Meta:
         model = Transaction
-        fields = ['id', 'date', 'description', 'amount', 'account_name', 'category_name', 'subcategory_name', 'justificatif', 'category']
-        read_only_fields = ['category_name', 'account_name', 'subcategory_name']
-
+        fields = ['id', 'date', 'description', 'amount', 'account_name', 'justificatif', 'is_reconciled']
+        
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'subcategories']
+        fields = ['id', 'name', 'is_revenue', 'subcategories']
 
     def get_subcategories(self, obj):
         from .serializers import SubcategorySerializer
@@ -28,25 +28,29 @@ class CategorySerializer(serializers.ModelSerializer):
         return SubcategorySerializer(subcategories, many=True).data
 
 class SubcategorySerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=Category.objects.all()
+    )
+
     class Meta:
         model = Subcategory
         fields = ['id', 'name', 'category']
 
 class AllTransactionSerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source='category.name', read_only=True)
+    category_name = serializers.CharField(source='category_name', read_only=True)
     account_name = serializers.CharField(source='account.name', read_only=True)
-    subcategory_name = serializers.CharField(source='subcategory.name', read_only=True)
+    subcategory_name = serializers.CharField(source='subcategory_name', read_only=True)
 
     class Meta:
         model = Transaction
-        fields = ['id', 'date', 'description', 'amount', 'account_name', 'category_name', 'subcategory_name', 'justificatif', 'category']
-        # Suppression du champ 'category' de read_only_fields
+        fields = ['id', 'date', 'description', 'amount', 'account_name', 'category_name', 'subcategory_name', 'justificatif', 'subcategory']
         read_only_fields = ['category_name', 'account_name', 'subcategory_name']
 
 class CategoryCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'is_revenue']
 
 class SubcategoryCreationSerializer(serializers.ModelSerializer):
     class Meta:
