@@ -13,7 +13,7 @@ python -c "import os; from django.contrib.auth import get_user_model; User = get
 
 # Collect static files
 echo "Collecting static files..."
-python manage.py collectstatic --no-input
+python manage.py collectstatic --no-input --clear
 
 # Start the Gunicorn server
 echo "Starting Gunicorn server..."
