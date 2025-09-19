@@ -4,7 +4,7 @@ import './TransactionsPage.css';
 function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]); // Variable 'categories'
   const [justificatifFile, setJustificatifFile] = useState(null);
   const [selectedTransactionId, setSelectedTransactionId] = useState(null);
   const [checkedState, setCheckedState] = useState({});
@@ -47,7 +47,8 @@ function TransactionsPage() {
 
       if (categoriesResponse.ok) {
         const categoriesData = await categoriesResponse.json();
-        setCategories(categoriesData);
+        setCategories(categoriesData); // Met à jour l'état des catégories
+        console.log("Catégories chargées :", categoriesData.length); // Utilisation de la variable
       } else {
         console.error('Erreur lors de la récupération des catégories.');
       }
