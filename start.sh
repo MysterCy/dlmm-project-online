@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
-# Exit on first error
+
+# Sortez du script à la première erreur
 set -e
 
-# Run database migrations
+# Exécutez les migrations de la base de données
+echo "Running database migrations..."
 python manage.py makemigrations
-python manage.py migrate
+python manage.py migrate --noinput
 
-# Create a superuser if it doesn't exist
+# Créez un super-utilisateur s'il n'existe pas
+echo "Creating superuser..."
 python manage.py createsuperuser --noinput
 
-# Start the Gunicorn server
+# Démarrez le serveur Gunicorn
+echo "Starting Gunicorn server..."
 gunicorn dlmm_project.wsgi:application
