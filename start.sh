@@ -7,15 +7,15 @@ set -e
 npm install --prefix frontend
 npm run build --prefix frontend
 
-# Collecte les fichiers statiques
-python manage.py collectstatic --noinput
-
 # Run database migrations
 python manage.py makemigrations
 python manage.py migrate --noinput
 
 # Créez un super-utilisateur
 python manage.py createsuperuser --noinput
+
+# Collecte les fichiers statiques
+python manage.py collectstatic --noinput
 
 # Démarrez le serveur Gunicorn
 gunicorn dlmm_project.wsgi:application
