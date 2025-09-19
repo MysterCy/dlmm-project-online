@@ -1,0 +1,26 @@
+body {
+  margin: 10;
+  padding-top: 80px; /* Espace pour la bannière fixe */
+  background-color: #f0f2f5;
+}
+
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  margin-left: 250px; /* Décale le contenu principal de la largeur de la sidebar */
+}
+
+.page-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}

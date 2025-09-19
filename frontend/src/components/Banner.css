@@ -1,0 +1,43 @@
+.banner-container {
+  background-color: #278cc2; /* Un bleu inspiré de Mario pour la bannière */
+  display: flex;
+  align-items: center;
+  padding: 7px 40px;
+  width: 100%;
+  box-sizing: content-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.banner-logo {
+  height: 180px; /* Taille du logo */
+  margin-right: 20px;
+}
+
+.banner-text {
+  flex-grow: 1;
+  text-align: center;
+  color: white;
+}
+
+.title-super-mario, .subtitle-super-mario {
+  font-family: 'SuperMario256', sans-serif;
+  margin: 0,5;
+  line-height: 1.2;
+}
+
+.title-super-mario {
+  font-size: 2.9em;
+}
+
+.subtitle-super-mario {
+  font-size: 2em;
+}
+
+.title-comic-sans {
+  font-family: 'Comic Sans MS', cursive;
+  margin: 0;
+  font-size: 2em;
+}

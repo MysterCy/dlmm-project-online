@@ -1,0 +1,60 @@
+.home-page-container {
+  margin-top: 220px;
+  padding: 20px;
+  background-color: #dbebfb;
+  min-height: calc(100vh - 100px);
+}
+
+.home-page-container h2 {
+  text-align: left;
+  color: #0d4389;
+  margin-bottom: 30px;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-size: 2em;
+}
+
+.balances-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.balance-card {
+  background-color: #f5ffea;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.balance-card:hover {
+  transform: translateY(-5px);
+}
+
+.balance-card h3 {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  color: #555;
+  margin-top: 0;
+  font-size: 1.5em;
+}
+
+.balance-amount {
+  font-family: Arial, sans-serif;
+  font-size: 2.5em;
+  font-weight: bold;
+  margin: 15px 0 0;
+}
+
+/* Styles spécifiques aux cartes */
+.sumup-card {
+  border-left: 16px solid #ff7100;
+}
+
+.ca-card {
+  border-left: 16px solid #4a9e5b;
+}
+
+.livret-a-card {
+  border-left: 16px solid #005691;
+}

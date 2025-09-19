@@ -1,0 +1,35 @@
+.sidebar-container {
+  width: 180px;
+  background-color: #0b1a2e; /* Bleu marine pour la sidebar */
+  color: white;
+  position: fixed;
+  left: 0;
+  top: 240px; /* Sous la bannière */
+  height: calc(100vh - 80px); /* 100% de la hauteur de l'écran moins la hauteur de la bannière */
+  padding: 30px;
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 20px;
+}
+
+.sidebar-menu a {
+  color: white;
+  text-decoration: none;
+  font-family: 'Comic Sans MS', cursive;
+  font-size: 1.8em;
+  display: block;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.sidebar-menu a:hover {
+  background-color: #31445b; /* Couleur au survol */
+}

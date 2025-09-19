@@ -1,0 +1,87 @@
+.transactions-page {
+  margin-top: 100px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-height: calc(100vh - 100px);
+}
+
+.transactions-page h2 {
+  text-align: left;
+  color: #0b1a2e;
+  margin-bottom: 20px;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.transactions-table th, .transactions-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.transactions-table th {
+  background-color: #0b1a2e;
+  color: white;
+}
+
+.transactions-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.transactions-table tr:hover {
+  background-color: #ddd;
+}
+
+.amount-positive {
+  color: green;
+}
+
+.amount-negative {
+  color: red;
+}
+
+.justificatif-uploaded {
+  color: green;
+  font-weight: bold;
+}
+
+.loading-message {
+  text-align: center;
+  font-size: 1.2em;
+  color: #666;
+  margin-top: 50px;
+}
+
+.category-creation {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.category-creation input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.category-creation button {
+  padding: 8px 16px;
+  background-color: #0b1a2e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.category-creation button:hover {
+  background-color: #31445b;
+}

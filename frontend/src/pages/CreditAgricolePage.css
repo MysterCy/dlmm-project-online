@@ -1,0 +1,61 @@
+.credit-agricole-page {
+  margin-top: 100px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-height: calc(100vh - 100px);
+}
+
+.credit-agricole-page h2 {
+  text-align: left;
+  color: #0b1a2e;
+  margin-bottom: 20px;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.transactions-table th, .transactions-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.transactions-table th:last-child, .transactions-table td:last-child {
+  text-align: right;
+}
+
+.transactions-table th {
+  background-color: #0b1a2e;
+  color: white;
+}
+
+.transactions-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.transactions-table tr:hover {
+  background-color: #ddd;
+}
+
+.amount-positive {
+  color: green;
+}
+
+.amount-negative {
+  color: red;
+}
