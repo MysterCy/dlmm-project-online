@@ -25,7 +25,6 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 # Création d'une classe d'administration personnalisée pour le modèle Transaction
-@admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     # Les champs à afficher dans la liste des transactions
     list_display = ('date', 'description', 'amount', 'category', 'subcategory', 'account',)
@@ -34,7 +33,6 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display_links = ('description',)
     
     # Les champs qui peuvent être édités directement dans la liste
-    # Note : les clés étrangères ne sont pas éditables de cette façon par défaut
     list_editable = ('amount',)
     
     # Les filtres disponibles dans la barre latérale
@@ -45,3 +43,6 @@ class TransactionAdmin(admin.ModelAdmin):
     
     # Lien vers la date de la hiérarchie pour naviguer par date
     date_hierarchy = 'date'
+
+# Enregistrement du modèle Transaction avec la classe d'administration personnalisée
+admin.site.register(Transaction, TransactionAdmin)
