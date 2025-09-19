@@ -50,7 +50,7 @@ ROOT_URLCONF = 'dlmm_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / '..' / '..' / 'frontend' / 'public'],  # Chemin corrigé
+        'DIRS': [os.path.join(BASE_DIR, '..', 'frontend', 'public')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,11 +103,13 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
-    BASE_DIR / '../../frontend/build/static',
+    os.path.join(BASE_DIR, '..', 'frontend', 'build', 'static'),
 ]
 # Définit WhiteNoise pour servir les fichiers statiques compressés
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
