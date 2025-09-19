@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-34_wdon07iv4$6c4bx7dx31hgx7o8nw5yjnfkgmmqpklspvjf+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['dlmm-backend.onrender.com', 'localhost', '127.0.0.1']
 
