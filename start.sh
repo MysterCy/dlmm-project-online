@@ -17,4 +17,4 @@ python backend/manage.py collectstatic --no-input --clear
 
 # Start the Gunicorn server
 echo "Starting Gunicorn server..."
-gunicorn dlmm_project.wsgi:application
+gunicorn backend/dlmm_project.wsgi:application
