@@ -1,5 +1,10 @@
 import os
+import django
 from django.contrib.auth import get_user_model
+from django.conf import settings
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dlmm_project.settings")
+django.setup()
 
 User = get_user_model()
 
